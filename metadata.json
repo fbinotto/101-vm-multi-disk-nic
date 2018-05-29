@@ -1,0 +1,7 @@
+{
+    "itemDisplayName": "Create VM(s) with multiple disks and multiple NICs.",
+    "description": "This template creates one or more VMs each with one or more data disks and network interfaces.",
+    "summary": "This template creates one or more VMs each with one or more data disks and network interfaces.",
+    "githubUsername": "fbinotto",
+    "dateUpdated": "2018-05-18"
+  }

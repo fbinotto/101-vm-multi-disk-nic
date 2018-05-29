@@ -1,0 +1,70 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VNETName": {
+            "value": "DET"
+        },
+        "vmAdminUserName": {
+            "value": "vmadmin"
+        },
+        "vmAdminPassword": {
+            "value": "P@ssw0rd@@@"
+        },
+        "serverSettings": {
+            "value": {
+                "servers": [
+                    {
+                        "VMName": "server01",
+                        "VMSize": "Standard_DS1",
+                        "NIC": [
+                            {
+                                "Name": "NIC0",
+                                "Allocation": "Dynamic",
+                                "Primary": "True",
+                                "SubnetName": "Schools"
+                            },
+                            {
+                                "Name": "NIC1",
+                                "Allocation": "Dynamic",
+                                "Primary": "False",
+                                "SubnetName": "Schools"
+                            }
+                        ],
+                        "Disk": [
+                            {
+                                "Name": "Disk1",
+                                "Size": "1024",
+                                "StorageAccountType": "Premium_LRS"
+                            },
+                            {
+                                "Name": "Disk2",
+                                "Size": "1024",
+                                "StorageAccountType": "Standard_LRS"
+                            }
+                        ]
+                    },
+                    {
+                        "VMName": "server02",
+                        "VMSize": "Standard_A1",
+                        "NIC": [
+                            {
+                                "Name": "NIC0",
+                                "Allocation": "Dynamic",
+                                "Primary": "True",
+                                "SubnetName": "Schools"
+                            }
+                        ],
+                        "Disk": [
+                            {
+                                "Name": "Disk1",
+                                "Size": "1024",
+                                "StorageAccountType": "Standard_LRS"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

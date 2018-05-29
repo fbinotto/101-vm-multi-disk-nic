@@ -1,0 +1,159 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "VNETName": {
+      "type": "string",
+      "defaultValue": "Core",
+      "metadata": {
+        "description": "Existing VNET that contains the domain controller"
+      }
+    },
+    "serverSettings": {
+      "type": "object",
+      "metadata": {
+        "description": "Server object with all VM objects and related resources"
+      }
+    },
+    "vmAdminUsername": {
+      "type": "string",
+      "defaultValue": "vmadmin",
+      "metadata": {
+        "description": "The name of the administrator of the new VM and the domain. Exclusion list: 'admin','administrator"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring",
+      "defaultValue": "P@ssw0rd!@@@@",
+      "metadata": {
+        "description": "The password for the administrator account of the new VM and the domain"
+      }
+    }
+  },
+  "variables": {
+    "imagePublisher": "MicrosoftWindowsServer",
+    "imageOffer": "WindowsServer",
+    "windowsOSVersion": "2016-Datacenter",
+    "vnetID": "[resourceId('DET-VNET','Microsoft.Network/virtualNetworks', parameters('VNETName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-04-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(parameters('serverSettings').servers[copyIndex()].VMName, '-', parameters('serverSettings').servers[copyIndex()].NIC[0].Name)]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "NICCopy",
+        "count": "[length(parameters('serverSettings').servers)]"
+      },
+      "dependsOn": [],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig",
+            "properties": {
+              "privateIPAllocationMethod": "[parameters('serverSettings').servers[copyIndex()].NIC[0].Allocation]",
+              "primary": "true",
+              "subnet": {
+                "id": "[concat(variables('vnetID'),'/subnets/', parameters('serverSettings').servers[copyIndex()].NIC[0].SubnetName)]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2018-04-01",
+      "condition": "[greater(length(parameters('serverSettings').servers[copyIndex()].NIC),1)]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(parameters('serverSettings').servers[copyIndex()].VMName, '-NIC1')]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "NICCopy",
+        "count": "[length(parameters('serverSettings').servers)]"
+      },
+      "dependsOn": [],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig",
+            "properties": {
+              "privateIPAllocationMethod": "[parameters('serverSettings').servers[copyIndex()].NIC[1].Allocation]",
+              "primary": "true",
+              "subnet": {
+                "id": "[concat(variables('vnetID'),'/subnets/', parameters('serverSettings').servers[copyIndex()].NIC[1].SubnetName)]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2018-04-01",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('serverSettings').servers[copyIndex()].VMName]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "VMcopy",
+        "count": "[length(parameters('serverSettings').servers)]"
+      },
+      "dependsOn": [
+        "NICCopy"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('serverSettings').servers[copyIndex()].VMSize]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('serverSettings').servers[copyIndex()].VMName]",
+          "adminUsername": "[parameters('vmAdminUsername')]",
+          "adminPassword": "[parameters('vmAdminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('windowsOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          },
+          "copy": [
+            {
+              "name": "dataDisks",
+              "count": "[length(parameters('serverSettings').servers[copyIndex('VMCopy')].Disk)]",
+              "input": {
+                "diskSizeGB": "[parameters('serverSettings').servers[copyIndex('VMCopy')].Disk[copyIndex('dataDisks')].Size]",
+                "lun": "[copyIndex('dataDisks')]",
+                "createOption": "Empty",
+                "managedDisk": {
+                  "storageAccountType": "[parameters('serverSettings').servers[copyIndex('VMCopy')].Disk[copyIndex('dataDisks')].StorageAccountType]"
+                }
+              }
+            }
+          ]
+        },
+        "networkProfile": {
+          "copy": [
+            {
+              "name": "networkInterfaces",
+              "count": "[length(parameters('serverSettings').servers[copyIndex('VMCopy')].NIC)]",
+              "input": {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('serverSettings').servers[copyIndex()].VMName, '-NIC', copyIndex('networkInterfaces')))]",
+                "properties": {
+                  "primary": "[parameters('serverSettings').servers[copyIndex('VMCopy')].NIC[copyIndex('networkInterfaces')].Primary]"
+                }
+              }
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": "false"
+          }
+        }
+      }
+    }
+  ]
+}
