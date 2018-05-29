@@ -4,9 +4,9 @@
   "parameters": {
     "VNETName": {
       "type": "string",
-      "defaultValue": "Core",
+      "defaultValue": "myVNet",
       "metadata": {
-        "description": "Existing VNET that contains the domain controller"
+        "description": "Existing VNET"
       }
     },
     "serverSettings": {
@@ -34,7 +34,7 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "windowsOSVersion": "2016-Datacenter",
-    "vnetID": "[resourceId('DET-VNET','Microsoft.Network/virtualNetworks', parameters('VNETName'))]"
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('VNETName'))]"
   },
   "resources": [
     {
