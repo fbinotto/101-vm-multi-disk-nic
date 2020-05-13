@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "VNETName": {
-            "value": "myVNET"
+            "value": "vnet2"
         },
         "vmAdminUserName": {
             "value": "vmadmin"
@@ -22,13 +22,13 @@
                                 "Name": "NIC0",
                                 "Allocation": "Dynamic",
                                 "Primary": "True",
-                                "SubnetName": "Core"
+                                "SubnetName": "default"
                             },
                             {
                                 "Name": "NIC1",
                                 "Allocation": "Dynamic",
                                 "Primary": "False",
-                                "SubnetName": "Edge"
+                                "SubnetName": "default"
                             }
                         ],
                         "Disk": [
@@ -52,7 +52,7 @@
                                 "Name": "NIC0",
                                 "Allocation": "Dynamic",
                                 "Primary": "True",
-                                "SubnetName": "Core"
+                                "SubnetName": "default"
                             }
                         ],
                         "Disk": [
