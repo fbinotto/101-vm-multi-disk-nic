@@ -16,7 +16,7 @@
                 "servers": [
                     {
                         "VMName": "server01",
-                        "VMSize": "Standard_DS1",
+                        "VMSize": "Standard_DS1_v2",
                         "NIC": [
                             {
                                 "Name": "NIC0",
