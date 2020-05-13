@@ -1,70 +1,15 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "VNETName": {
-            "value": "vnet2"
-        },
-        "vmAdminUserName": {
-            "value": "vmadmin"
-        },
-        "vmAdminPassword": {
-            "value": "P@ssw0rd@@@"
-        },
-        "serverSettings": {
-            "value": {
-                "servers": [
-                    {
-                        "VMName": "server01",
-                        "VMSize": "Standard_DS1_v2",
-                        "NIC": [
-                            {
-                                "Name": "NIC0",
-                                "Allocation": "Dynamic",
-                                "Primary": "True",
-                                "SubnetName": "default"
-                            },
-                            {
-                                "Name": "NIC1",
-                                "Allocation": "Dynamic",
-                                "Primary": "False",
-                                "SubnetName": "default"
-                            }
-                        ],
-                        "Disk": [
-                            {
-                                "Name": "Disk1",
-                                "Size": "1024",
-                                "StorageAccountType": "Premium_LRS"
-                            },
-                            {
-                                "Name": "Disk2",
-                                "Size": "1024",
-                                "StorageAccountType": "Standard_LRS"
-                            }
-                        ]
-                    },
-                    {
-                        "VMName": "server02",
-                        "VMSize": "Standard_A1",
-                        "NIC": [
-                            {
-                                "Name": "NIC0",
-                                "Allocation": "Dynamic",
-                                "Primary": "True",
-                                "SubnetName": "default"
-                            }
-                        ],
-                        "Disk": [
-                            {
-                                "Name": "Disk1",
-                                "Size": "1024",
-                                "StorageAccountType": "Standard_LRS"
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "tccadmin"
+    },
+    "adminPassword": {
+      "value": "Addeegg##$$22"
+    },
+    "dnsLabelPrefix": {
+      "value": "tccvmdemo21"
     }
+  }
 }
